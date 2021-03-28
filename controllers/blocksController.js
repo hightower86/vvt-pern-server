@@ -1,10 +1,41 @@
+const ApiError = require('../error/ApiError');
+const { Blocks } = require('../models/models');
+
 class BlocksController {
-  async get(req, res) {
-    res.json({ message: 'blocks router works well...' });
+  async createBlock(req, res) {
+    const { text, fontSize, color, bgColor } = req.body;
+    const block = await Blocks.create({ text, fontSize, color, bgColor });
+    return res.json(block);
   }
-  async post(req, res) {}
-  async update(req, res) {}
-  async delete(req, res) {}
+
+  async getAll(req, res) {
+    const blocks = await Blocks.findAll();
+    return res.json(blocks);
+  }
+
+  async updateBlock(req, res) {
+    const { id } = req.params;
+    const { text, fontSize, color, bgColor } = req.body;
+    // const block = await Blocks.update({ text, fontSize, color, bgColor });
+    const result = await Blocks.update(
+      { text, fontSize, color, bgColor },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    return res.json(result);
+  }
+  async deleteBlock(req, res) {
+    const { id } = req.params;
+    const result = await Blocks.destroy({
+      where: {
+        id: id,
+      },
+    });
+    return res.json(result);
+  }
 }
 
 module.exports = new BlocksController();
